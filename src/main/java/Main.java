@@ -1,72 +1,34 @@
-/**
- * Реализовать алгоритм перевода из инфиксной записи в постфиксную для арифметического выражения.
- * Вычислить запись если это возможно
- */
-
-import java.util.Stack;
+import java.util.*;
 
 public class Main {
-
     public static void main(String[] args) {
-        boolean isFormatted = false;
-        String request = "пожалуйста форматируйте код";
-        // исправили теперь build succcessful
-//        if (isFormatted) {
-        String infix = "A+(B*C)-(D*E)+F/D";
-        String postfix = infixToPostfix(infix);
-        System.out.println(postfix);
-//        }
+        int arr1[] = {4, 9, 5};
+        int arr2[] = {9, 4, 9, 8, 4};
+        System.out.println("Intersection of two arrays is : ");
+        System.out.println(Arrays.toString(intersect(arr1, arr2)));
     }
 
-    public static int prec(char c) {
-        if (c == '*' || c == '/') {
-            return 3;
-        }
-        if (c == '+' || c == '-') {
-            return 4;
-        }
-        if (c == '&') {
-            return 8;
-        }
-        if (c == '^') {
-            return 9;
-        }
-        if (c == '|') {
-            return 10;
-        }
-        return Integer.MAX_VALUE;
-    }
-
-    public static boolean isOperand(char c) {
-        return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9');
-    }
-
-    public static String infixToPostfix(String infix) {
-        if (infix == null || infix.length() == 0) {
-            return infix;
-        }
-        Stack<Character> s = new Stack<>();
-        StringBuilder postfix = new StringBuilder();
-        for (char c : infix.toCharArray()) {
-            if (c == '(') {
-                s.add(c);
-            } else if (c == ')') {
-                while (s.peek() != '(') {
-                    postfix.append(s.pop());
-                }
-                s.pop();
-            } else if (isOperand(c)) {
-                postfix.append(c);
+    public static int[] intersect(int[] nums1, int[] nums2) {
+        HashMap<Integer, Integer> data = new HashMap<Integer, Integer>();
+        for (int i = 0; i < nums1.length; i++) {
+            if (!data.containsKey(nums1[i])) {
+                data.put(nums1[i], 1);
             } else {
-                while (!s.isEmpty() && prec(c) >= prec(s.peek())) {
-                    postfix.append(s.pop());
-                }
-                s.add(c);
+                data.put(nums1[i], data.get(nums1[i]) + 1);
             }
         }
-        while (!s.isEmpty()) {
-            postfix.append(s.pop());
+        List<Integer> res = new LinkedList<Integer>();
+        for (int i = 0; i < nums2.length; i++) {
+            if (data.containsKey(nums2[i]) && data.get(nums2[i]) != 0) {
+                res.add(nums2[i]);
+                data.put(nums2[i], data.get(nums2[i]) - 1);
+            }
         }
-        return postfix.toString();
+        int[] result = new int[res.size()];
+        int i = 0;
+        for (Integer j : res) {
+            result[i++] = j;
+        }
+        return result;
     }
 }
